@@ -2,9 +2,6 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
 playlist_urls = [
-    #"https://open.spotify.com/playlist/6TWgOtrMBa1JTdeS7ImnDd?si=1c13089ecced422d", # Gym Rap & Hardstyle - 213 songs
-    #"https://open.spotify.com/playlist/3vVP7mntRIdq0i5bzvouMt?si=547648c120fc4c71", # Running Playlist 180 bpm - 44 songs
-    #"https://open.spotify.com/playlist/4caZ0gjmOsYztmudFqdRXb?si=e391dd1d17924445", # DRILL SHIT KILL SHIT - 465 songs
     "https://open.spotify.com/playlist/37i9dQZF1DXat5j4Lk8UEj?si=3973deef1bd04817", # Folk Rock Favorites - 100 songs
     "https://open.spotify.com/playlist/0U5JlVYafbQ35qjWhQKUfp?si=4d4496e0acf24275", # Modern Folk Rock - 51 songs
     "https://open.spotify.com/playlist/2dUO8L5PCyBnN6tu6i9b6V?si=7c82128fb4b843a0", # Indie/Folk Rock - 508 songs
@@ -15,9 +12,9 @@ tolerance = 0.05
 
 
 scope = "playlist-modify-public"
-client_id = "53ac7745b5f84f9397f7c15c13bae419"
-client_secret = "c46f1d283fc94a27966c2d8450647030"
-redirect_uri = "http://localhost:8888/callback"
+client_id = "<SECRET>"
+client_secret = "<SECRET>"
+redirect_uri = "<SECRET>"
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id, client_secret, redirect_uri, scope=scope))
 
