@@ -1,64 +1,55 @@
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
+from SpotifyPlaylistMaker import SpotifyPlaylistMaker
 
 playlist_urls = [
     "https://open.spotify.com/playlist/37i9dQZF1DXat5j4Lk8UEj?si=3973deef1bd04817", # Folk Rock Favorites - 100 songs
-    "https://open.spotify.com/playlist/0U5JlVYafbQ35qjWhQKUfp?si=4d4496e0acf24275", # Modern Folk Rock - 51 songs
-    "https://open.spotify.com/playlist/2dUO8L5PCyBnN6tu6i9b6V?si=7c82128fb4b843a0", # Indie/Folk Rock - 508 songs
+    "https://open.spotify.com/playlist/37i9dQZF1DWSgQ5Y8XEtFi?si=9124100c8b0e421b", # Lockjaw - 50 songs
+    "https://open.spotify.com/playlist/16e0fS65JQsToxR3hxufzV?si=c6103605f14c46df", # songs I wish i could listen to for the first time again - 100 songs - 29 songs
+    "https://open.spotify.com/playlist/3baQvj17epnxzewdyOIpIJ?si=95471e0ce9954cbb", # Energetic House - 105 songs
+    "https://open.spotify.com/playlist/6TWgOtrMBa1JTdeS7ImnDd?si=965f53c6cf184298", # Gym Rap and Hardstyle - 224 songs
+    "https://open.spotify.com/playlist/0Ur30xkD1qsIodE9LKqBOg?si=21e6c9e13150418a", # Kanye Bangers - 94 songs
+    "https://open.spotify.com/playlist/4oOv0CVyh6yZTMUuzpuC2u?si=1ace2042313f4ab0", # GOMDB - 137 songs
+    "https://open.spotify.com/playlist/5mnU2v77xvzSQCclBEtT6f?si=273ac0e808ed4b4f", # Big nuts in my mouth - 94 songs
+    "https://open.spotify.com/playlist/2lk6445GUpENJLdDyJFMHJ?si=207ac3509f18459b", # 100 best ROCK WORKOUT SONGS - 101 songs
+    "https://open.spotify.com/playlist/2vvlkzf1hO1IAtGAITdEVE?si=dcdf798e335d4ecd", # Pump Up Rock - 280 songs
+    "https://open.spotify.com/playlist/4bvh3D3jZ4xhCixsl6BKjT?si=b44d785d67444a37", # SONGS THAT ARE 100% PERFECTION - 148 songs
+    "https://open.spotify.com/playlist/7a5ef1Rd6EF1VqM8XMZN8I?si=a6b612e71d764603", # Biking playlist - 424 songs
+    "https://open.spotify.com/playlist/0UBFYlt0AL04qINqhHYy36?si=4287744bed904fab", # Best running playlist ever - 79 songs
+    "https://open.spotify.com/playlist/4PYYrTwEUdtpsjdfXdTIGX?si=4bf4394633ef4762", # Hip Hop/Rap songs that everyone knows except you - 142 songs
+    "https://open.spotify.com/playlist/78T2QXH8fAyIfByeD4CANw?si=ca96282b6b224bde", # songs that are perfect - 97 songs
+    "https://open.spotify.com/playlist/37i9dQZF1DX97h7ftpNSYT?si=9f85e9b32de14096", # I love my 2010s Hip-Hop - 100 songs
+    "https://open.spotify.com/playlist/37i9dQZF1DWUX4dHd4gmc7?si=a5b7f5538f644bc5", # Workout Hip-Hop - 82 songs
+    "https://open.spotify.com/playlist/37i9dQZF1DWT5MrZnPU1zD?si=edb3c2ef787d47e4", # Hip Hop Controller - 100 songs
+    "https://open.spotify.com/playlist/37i9dQZF1DWTyiBJ6yEqeu?si=bf3e1993c0514d0e", # Top Gaming Tracks - 100 songs
+    "https://open.spotify.com/playlist/37i9dQZF1DWWPcvnOpPG3x?si=c0836d3238004c85", # Run this town - 50 songs
+    "https://open.spotify.com/playlist/37i9dQZF1DX3oM43CtKnRV?si=3776ada4c7ed4af7", # 00s Rock Anthems - 100 songs
+    "https://open.spotify.com/playlist/2pVWj9B06NrUNjLCQC9XJP?si=e59aac6671184851", # workout songs that make me feel like cbum - 66 songs
+    "https://open.spotify.com/playlist/0JtK8ZG5Ir5j9EBraH0nA2?si=076bcddc9af64674", # Trap Metal, Phonk, Hardstyle, Rock, Training, Rap - 571 songs
 ]
-target_bpm = 180
-tolerance = 0.05
 
+EDIT_PLAYLIST = True # if True, edit playlist in place. Else, create new playlist based on playlist_urls
 
+edit_playlist_url = "https://open.spotify.com/playlist/69x4kswf9xRWYf7ySFcml5?si=e1e91d78c5e8402b"
+playlist_name = "165 BPM All Workout Playlist"
 
-scope = "playlist-modify-public"
-client_id = "<SECRET>"
-client_secret = "<SECRET>"
-redirect_uri = "<SECRET>"
+min_bpm = 165
+max_bpm = None
+min_energy = 0.65
+min_danceability = 0.65
+track_sort = "bpm_bounce"
 
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id, client_secret, redirect_uri, scope=scope))
+## Edit above this line ##
 
-tracks = set()
-for playlist_url in playlist_urls:
-    playlist_id = playlist_url.split("/")[-1].split("?")[0]
-    result = sp.playlist_tracks(playlist_id, fields="items(track(name,id,is_local,available_markets)),next", limit=50)
-    items = result['items']
-    while result['next']:
-        result = sp.next(result)
-        items.extend(result['items'])
+playlist_maker = SpotifyPlaylistMaker()
+playlist_maker.set_min_bpm(min_bpm)
+playlist_maker.set_max_bpm(max_bpm)
+playlist_maker.set_min_energy(min_energy)
+playlist_maker.set_min_danceability(min_danceability)
 
-    items_clean = [x['track']['id'] for x in items if not x['track']['is_local'] and 'US' in x['track']['available_markets']]
-    tracks.update(items_clean)
-tracks = list(tracks)
+playlist_maker.set_all_tracks([edit_playlist_url] if EDIT_PLAYLIST else playlist_urls)
+playlist_maker.remove_invalid_tracks()
+playlist_maker.reorder_tracks(track_sort)
 
-low_bpm = target_bpm * (1 - tolerance)
-high_bpm = target_bpm * (1 + tolerance)
-
-original_count = len(tracks)
-bad_count = 0
-for i in range(0,len(tracks),100):
-    subset = tracks[i:i+100]
-    features = sp.audio_features(subset)
-    id_features = zip(subset, features)
-    for id, feature in id_features:
-        if feature is None:
-            print(f'No features for {id}')
-            continue
-        tempo = feature['tempo']
-        if tempo < low_bpm or tempo > high_bpm:
-            tracks.remove(id)
-            bad_count += 1
-
-print("Found {} tracks with BPM inside of {}-{} range".format(original_count - bad_count, low_bpm, high_bpm))
-
-user_id = sp.me()['id']
-
-playlist_name = f"{target_bpm} BPM Generated Playlist"
-result = sp.user_playlist_create(user=user_id, name=playlist_name)
-playlist_id = result['id']
-
-print("Created playlist: {}".format(playlist_name))
-
-for i in range(0,len(tracks),100):
-    subset = tracks[i:i+100]    
-    sp.user_playlist_add_tracks(user=user_id, playlist_id=playlist_id, tracks=subset)
+if EDIT_PLAYLIST:
+    playlist_maker.make_playlist(playlist_name=playlist_name)
+else:
+    playlist_maker.make_playlist(edit_playlist_url=edit_playlist_url)
